@@ -1,4 +1,4 @@
-package org.unibl.etf.rest.client;
+package rest.client;
 
 import java.net.URI;
 
@@ -17,7 +17,7 @@ public class RESTClient {
 	public static void main(String[] args) {
 		ClientConfig clientConfig = new ClientConfig();
 		Client client = ClientBuilder.newClient(clientConfig);
-		WebTarget webTarget = client.target(getBaseURI()).path("rest").path("message");
+		WebTarget webTarget = client.target(getBaseURI()).path("rest").path("login");
 		
 		Invocation.Builder invocationBuilder =  webTarget.request(MediaType.TEXT_PLAIN);
 		Response response = invocationBuilder.get();
