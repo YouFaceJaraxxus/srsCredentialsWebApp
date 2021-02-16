@@ -1,24 +1,24 @@
 package credential;
 
 public class Credential {
-	private String username;
-	private String password;
-	public String getUsername() {
-		return username;
+	private String key;
+	private String value;
+	public String getKey() {
+		return key;
 	}
-	public void setUsername(String username) {
-		this.username = username;
+	public void setKey(String key) {
+		this.key = key;
 	}
-	public String getPassword() {
-		return password;
+	public String getValue() {
+		return value;
 	}
-	public void setPassword(String password) {
-		this.password = password;
+	public void setValue(String value) {
+		this.value = value;
 	}
-	public Credential(String username, String password) {
+	public Credential(String key, String value) {
 		super();
-		this.username = username;
-		this.password = password;
+		this.key = key;
+		this.value = value;
 	}
 	public Credential() {
 		super();

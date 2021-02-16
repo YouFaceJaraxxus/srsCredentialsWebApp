@@ -63,11 +63,12 @@ public class RedisApi {
 		jedis.set(username, password);
 	}
 	
-	public String checkLogin(String username, String password) {
+	
+	public boolean checkLogin(String username, String password) {
 		String pass = jedis.get(username);
-		if(pass==null||"".equals(pass)) return "No such username";
-		else if (password==null||!password.equals(pass)) return "The password is incorrect.";
-		else return "Good login. Welcome.";
+		if(pass==null||"".equals(pass)) return false;
+		else if (password==null||!password.equals(pass)) return false;
+		else return true;
 	}
 	
 	public String popCredential(String username) {
@@ -112,7 +113,7 @@ public class RedisApi {
 		JSONArray array = new JSONArray();
 		for(Entry<String, String> element: getList().entrySet())
 		{
-			//as an element would look line username=password, we need {username:password}
+			//as an element would look line username=password, we need {username:password} and {email:code}
 			JSONObject object = new JSONObject("{"+element.toString().replace("=", ":")+"}"); 
 			array.put(object);
 		}

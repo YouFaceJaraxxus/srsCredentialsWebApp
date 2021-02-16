@@ -19,7 +19,18 @@ import redis.RedisApi;
 
 @Path("/user")
 public class APIService {
-
+	private static String SUCCESSFUL_REGISTRATION = "Succesful registration.";
+	private static String SUCCESSFUL_LOGIN = "Successful login.";
+	private static String USERNAME_EXISTS = "Username already exists.";
+	private static String INVALID_CREDENTIALS = "Invalid credentials.";
+	private static int loginRedisPort = 6379;
+	private static int secondLoginRedisPort = 6380;
+	private static int registerRedisPort = 6381;
+	
+	private RedisApi loginRedis = new RedisApi(loginRedisPort);
+	private RedisApi secondLoginRedis = new RedisApi(secondLoginRedisPort);
+	private RedisApi registerRedis = new RedisApi(registerRedisPort);
+	
 	@GET
 	@Path("/plain")
 	@Produces(MediaType.TEXT_PLAIN)
@@ -38,7 +49,7 @@ public class APIService {
 	@Path("/json")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getMsgJSON() {
-		return RedisApi.api.getListAsJSONString();
+		return loginRedis.getListAsJSONString();
 	}
 	
 
@@ -48,11 +59,11 @@ public class APIService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response register(Credential credential) {
 		try {
-
-			String username = credential.getUsername();
-			String password = credential.getPassword();
-			RedisApi.api.setCredential(username, password);
-			return Response.status(201).entity(credential).build();
+			String username = credential.getKey();
+			String email = credential.getValue();
+			String result = new SSLPollingClient("register", username, email).start();
+			if("OK_REGISTER".equals(result)) return Response.status(201).entity(credential).build();
+			else return Response.status(403).entity(credential).build();
 		}catch(Exception e) {
 			e.printStackTrace();
 			return Response.status(500).build();
@@ -65,10 +76,32 @@ public class APIService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response login(Credential credential) {
 		try {
-			String username = credential.getUsername();
-			String password = credential.getPassword();
-			String response = RedisApi.api.checkLogin(username, password);
-			return Response.status(201).entity(response).build();
+			String username = credential.getKey();
+			String password = credential.getValue();
+			String response = new SSLPollingClient("login", username, password).start();
+			if("OK_LOGIN".equals(response)) {
+				return Response.status(200).entity(response).build();
+			}
+			else return Response.status(401).build();
+		}catch(Exception e) {
+			e.printStackTrace();
+			return Response.status(500).build();
+		}
+	}
+	
+	@POST
+	@Path("/secondLogin")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response secondLogin(Credential credential) {
+		try {
+			String username = credential.getKey();
+			String code = credential.getValue();
+			String response = new SSLPollingClient("secondLogin", username, code).start();
+			if("OK_SECOND_LOGIN".equals(response)) {
+				return Response.status(200).entity(response).build();
+			}
+			else return Response.status(401).build();
 		}catch(Exception e) {
 			e.printStackTrace();
 			return Response.status(500).build();
