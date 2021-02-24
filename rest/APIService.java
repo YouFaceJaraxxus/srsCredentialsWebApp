@@ -61,7 +61,7 @@ public class APIService {
 		try {
 			String username = credential.getKey();
 			String email = credential.getValue();
-			String result = new SSLPollingClient("register", username, email).start();
+			String result = new SSLCredentialsClient("register", username, email).start();
 			if("OK_REGISTER".equals(result)) return Response.status(201).entity(credential).build();
 			else return Response.status(403).entity(credential).build();
 		}catch(Exception e) {
@@ -78,7 +78,7 @@ public class APIService {
 		try {
 			String username = credential.getKey();
 			String password = credential.getValue();
-			String response = new SSLPollingClient("login", username, password).start();
+			String response = new SSLCredentialsClient("login", username, password).start();
 			if("OK_LOGIN".equals(response)) {
 				return Response.status(200).entity(response).build();
 			}
@@ -97,7 +97,7 @@ public class APIService {
 		try {
 			String username = credential.getKey();
 			String code = credential.getValue();
-			String response = new SSLPollingClient("secondLogin", username, code).start();
+			String response = new SSLCredentialsClient("secondLogin", username, code).start();
 			if("OK_SECOND_LOGIN".equals(response)) {
 				return Response.status(200).entity(response).build();
 			}

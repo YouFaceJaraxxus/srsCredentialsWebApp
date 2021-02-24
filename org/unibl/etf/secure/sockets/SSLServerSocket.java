@@ -77,7 +77,7 @@ public class SSLServerSocket {
 			System.setProperty("javax.net.ssl.keyStore", "keystore.jks");
 			System.setProperty("javax.net.ssl.keyStorePassword", "test123");
 			SSLServerSocketFactory ssf = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
-			ServerSocket ss = ssf.createServerSocket(PORT);
+			ServerSocket ss = ssf.createServerSocket(PORT); //this is for establishing socket connection with the AccessManager machine
 			Socket pollingSocket = ss.accept();
 			new SSLServerSocketPollingThread(pollingSocket).start();
 			System.out.println("Accepted connection!");
